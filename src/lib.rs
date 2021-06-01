@@ -140,7 +140,6 @@
 
 extern crate smallvec;
 extern crate sp_std;
-extern crate cpufeatures;
 
 mod crlf;
 mod rope;
