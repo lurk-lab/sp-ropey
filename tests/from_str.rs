@@ -1,6 +1,6 @@
-extern crate ropey;
+extern crate sp_ropey;
 
-use ropey::Rope;
+use sp_ropey::Rope;
 
 const TEXT: &str = include_str!("test_text.txt");
 

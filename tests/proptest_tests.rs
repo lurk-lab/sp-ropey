@@ -1,10 +1,10 @@
 #[macro_use]
 extern crate proptest;
-extern crate ropey;
+extern crate sp_ropey;
 
 use proptest::collection::vec;
 use proptest::test_runner::Config;
-use ropey::{
+use sp_ropey::{
     str_utils::{
         byte_to_char_idx, byte_to_line_idx, char_to_byte_idx, char_to_line_idx, line_to_byte_idx,
     },

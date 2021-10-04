@@ -2,9 +2,9 @@
 //! want, and that there are no regressions. It's a "does this compile?"
 //! test.
 
-extern crate ropey;
+extern crate sp_ropey;
 
-use ropey::{Rope, RopeSlice};
+use sp_ropey::{Rope, RopeSlice};
 
 const TEXT: &str = include_str!("test_text.txt");
 

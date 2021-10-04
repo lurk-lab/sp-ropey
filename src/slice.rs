@@ -1573,7 +1573,7 @@ mod tests {
         byte_to_char_idx, byte_to_line_idx, char_to_byte_idx, char_to_line_idx,
     };
     use crate::Rope;
-    use slice::String;
+    use crate::slice::String;
 
     // 127 bytes, 103 chars, 1 line
     const TEXT: &str = "Hello there!  How're you doing?  It's \

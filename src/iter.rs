@@ -2250,6 +2250,8 @@ mod tests {
 
     #[test]
     fn lines_sliced_01() {
+      use smallvec::alloc::string::ToString;
+
         let r = Rope::from_str(TEXT);
 
         let s_start = 34;

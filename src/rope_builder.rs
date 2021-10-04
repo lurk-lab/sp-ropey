@@ -26,7 +26,7 @@ use crate::tree::{Node, NodeChildren, NodeText, MAX_BYTES, MAX_CHILDREN};
 ///
 /// # Example
 /// ```
-/// # use ropey::RopeBuilder;
+/// # use sp_ropey::RopeBuilder;
 /// #
 /// let mut builder = RopeBuilder::new();
 ///

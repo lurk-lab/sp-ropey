@@ -1,10 +1,10 @@
 //! Randomized tests to try to catch crlf seam errors.
 
 extern crate rand;
-extern crate ropey;
+extern crate sp_ropey;
 
 use rand::Rng;
-use ropey::Rope;
+use sp_ropey::Rope;
 
 #[test]
 fn crlf_inserts() {

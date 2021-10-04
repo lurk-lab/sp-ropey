@@ -1,11 +1,11 @@
-extern crate ropey;
+extern crate sp_ropey;
 
 use std::sync::mpsc;
 use std::thread;
 
 use std::iter::Iterator;
 
-use ropey::Rope;
+use sp_ropey::Rope;
 
 const TEXT: &str = include_str!("test_text.txt");
 
