@@ -6,7 +6,7 @@
 #![no_std]
 
 extern crate smallvec;
-extern crate sp_std;
+extern crate alloc;
 
 mod crlf;
 mod rope;

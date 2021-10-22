@@ -1,6 +1,6 @@
 use smallvec::alloc::string::String;
-use sp_std::ops::{Bound, RangeBounds};
-use sp_std::sync::Arc;
+use core::ops::{Bound, RangeBounds};
+use alloc::sync::Arc;
 
 use crate::iter::{Bytes, Chars, Chunks, Lines};
 use crate::rope::Rope;
@@ -1342,13 +1342,13 @@ impl<'a> From<RopeSlice<'a>> for String {
 /// owned string if the contents is not contiguous in memory.
 ///
 /// Runs in best case O(1), worst case O(N).
-impl<'a> From<RopeSlice<'a>> for sp_std::borrow::Cow<'a, str> {
+impl<'a> From<RopeSlice<'a>> for alloc::borrow::Cow<'a, str> {
     #[inline]
     fn from(s: RopeSlice<'a>) -> Self {
         if let Some(text) = s.as_str() {
-            sp_std::borrow::Cow::Borrowed(text)
+            alloc::borrow::Cow::Borrowed(text)
         } else {
-            sp_std::borrow::Cow::Owned(String::from(s))
+            alloc::borrow::Cow::Owned(String::from(s))
         }
     }
 }
@@ -1356,15 +1356,15 @@ impl<'a> From<RopeSlice<'a>> for sp_std::borrow::Cow<'a, str> {
 //==============================================================
 // Other impls
 
-impl<'a> sp_std::fmt::Debug for RopeSlice<'a> {
-    fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+impl<'a> core::fmt::Debug for RopeSlice<'a> {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         f.debug_list().entries(self.chunks()).finish()
     }
 }
 
-impl<'a> sp_std::fmt::Display for RopeSlice<'a> {
+impl<'a> core::fmt::Display for RopeSlice<'a> {
     #[inline]
-    fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         for chunk in self.chunks() {
             write!(f, "{}", chunk)?
         }
@@ -1372,9 +1372,9 @@ impl<'a> sp_std::fmt::Display for RopeSlice<'a> {
     }
 }
 
-impl<'a> sp_std::cmp::Eq for RopeSlice<'a> {}
+impl<'a> core::cmp::Eq for RopeSlice<'a> {}
 
-impl<'a, 'b> sp_std::cmp::PartialEq<RopeSlice<'b>> for RopeSlice<'a> {
+impl<'a, 'b> core::cmp::PartialEq<RopeSlice<'b>> for RopeSlice<'a> {
     fn eq(&self, other: &RopeSlice<'b>) -> bool {
         if self.len_bytes() != other.len_bytes() {
             return false;
@@ -1421,7 +1421,7 @@ impl<'a, 'b> sp_std::cmp::PartialEq<RopeSlice<'b>> for RopeSlice<'a> {
     }
 }
 
-impl<'a, 'b> sp_std::cmp::PartialEq<&'b str> for RopeSlice<'a> {
+impl<'a, 'b> core::cmp::PartialEq<&'b str> for RopeSlice<'a> {
     #[inline]
     fn eq(&self, other: &&'b str) -> bool {
         match *self {
@@ -1447,72 +1447,72 @@ impl<'a, 'b> sp_std::cmp::PartialEq<&'b str> for RopeSlice<'a> {
     }
 }
 
-impl<'a, 'b> sp_std::cmp::PartialEq<RopeSlice<'a>> for &'b str {
+impl<'a, 'b> core::cmp::PartialEq<RopeSlice<'a>> for &'b str {
     #[inline]
     fn eq(&self, other: &RopeSlice<'a>) -> bool {
         other == self
     }
 }
 
-impl<'a> sp_std::cmp::PartialEq<str> for RopeSlice<'a> {
+impl<'a> core::cmp::PartialEq<str> for RopeSlice<'a> {
     #[inline]
     fn eq(&self, other: &str) -> bool {
-        sp_std::cmp::PartialEq::<&str>::eq(self, &other)
+        core::cmp::PartialEq::<&str>::eq(self, &other)
     }
 }
 
-impl<'a> sp_std::cmp::PartialEq<RopeSlice<'a>> for str {
+impl<'a> core::cmp::PartialEq<RopeSlice<'a>> for str {
     #[inline]
     fn eq(&self, other: &RopeSlice<'a>) -> bool {
-        sp_std::cmp::PartialEq::<&str>::eq(other, &self)
+        core::cmp::PartialEq::<&str>::eq(other, &self)
     }
 }
 
-impl<'a> sp_std::cmp::PartialEq<String> for RopeSlice<'a> {
+impl<'a> core::cmp::PartialEq<String> for RopeSlice<'a> {
     #[inline]
     fn eq(&self, other: &String) -> bool {
         self == other.as_str()
     }
 }
 
-impl<'a> sp_std::cmp::PartialEq<RopeSlice<'a>> for String {
+impl<'a> core::cmp::PartialEq<RopeSlice<'a>> for String {
     #[inline]
     fn eq(&self, other: &RopeSlice<'a>) -> bool {
         self.as_str() == other
     }
 }
 
-impl<'a, 'b> sp_std::cmp::PartialEq<sp_std::borrow::Cow<'b, str>> for RopeSlice<'a> {
+impl<'a, 'b> core::cmp::PartialEq<alloc::borrow::Cow<'b, str>> for RopeSlice<'a> {
     #[inline]
-    fn eq(&self, other: &sp_std::borrow::Cow<'b, str>) -> bool {
+    fn eq(&self, other: &alloc::borrow::Cow<'b, str>) -> bool {
         *self == **other
     }
 }
 
-impl<'a, 'b> sp_std::cmp::PartialEq<RopeSlice<'a>> for sp_std::borrow::Cow<'b, str> {
+impl<'a, 'b> core::cmp::PartialEq<RopeSlice<'a>> for alloc::borrow::Cow<'b, str> {
     #[inline]
     fn eq(&self, other: &RopeSlice<'a>) -> bool {
         **self == *other
     }
 }
 
-impl<'a> sp_std::cmp::PartialEq<Rope> for RopeSlice<'a> {
+impl<'a> core::cmp::PartialEq<Rope> for RopeSlice<'a> {
     #[inline]
     fn eq(&self, other: &Rope) -> bool {
         *self == other.slice(..)
     }
 }
 
-impl<'a> sp_std::cmp::PartialEq<RopeSlice<'a>> for Rope {
+impl<'a> core::cmp::PartialEq<RopeSlice<'a>> for Rope {
     #[inline]
     fn eq(&self, other: &RopeSlice<'a>) -> bool {
         self.slice(..) == *other
     }
 }
 
-impl<'a> sp_std::cmp::Ord for RopeSlice<'a> {
+impl<'a> core::cmp::Ord for RopeSlice<'a> {
     #[allow(clippy::op_ref)] // Erroneously thinks with can directly use a slice.
-    fn cmp(&self, other: &RopeSlice<'a>) -> sp_std::cmp::Ordering {
+    fn cmp(&self, other: &RopeSlice<'a>) -> core::cmp::Ordering {
         let mut chunk_itr_1 = self.chunks();
         let mut chunk_itr_2 = other.chunks();
         let mut chunk1 = chunk_itr_1.next().unwrap_or("").as_bytes();
@@ -1521,7 +1521,7 @@ impl<'a> sp_std::cmp::Ord for RopeSlice<'a> {
         loop {
             if chunk1.len() >= chunk2.len() {
                 let compared = chunk1[..chunk2.len()].cmp(chunk2);
-                if compared != sp_std::cmp::Ordering::Equal {
+                if compared != core::cmp::Ordering::Equal {
                     return compared;
                 }
 
@@ -1529,7 +1529,7 @@ impl<'a> sp_std::cmp::Ord for RopeSlice<'a> {
                 chunk2 = &[];
             } else {
                 let compared = chunk1.cmp(&chunk2[..chunk1.len()]);
-                if compared != sp_std::cmp::Ordering::Equal {
+                if compared != core::cmp::Ordering::Equal {
                     return compared;
                 }
 
@@ -1558,9 +1558,9 @@ impl<'a> sp_std::cmp::Ord for RopeSlice<'a> {
     }
 }
 
-impl<'a, 'b> sp_std::cmp::PartialOrd<RopeSlice<'b>> for RopeSlice<'a> {
+impl<'a, 'b> core::cmp::PartialOrd<RopeSlice<'b>> for RopeSlice<'a> {
     #[inline]
-    fn partial_cmp(&self, other: &RopeSlice<'b>) -> Option<sp_std::cmp::Ordering> {
+    fn partial_cmp(&self, other: &RopeSlice<'b>) -> Option<core::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
@@ -2442,9 +2442,9 @@ mod tests {
         let s1 = r1.slice(..);
         let s2 = r2.slice(..);
 
-        assert_eq!(s1.cmp(&s2), sp_std::cmp::Ordering::Equal);
-        assert_eq!(s1.slice(..24).cmp(&s2), sp_std::cmp::Ordering::Less);
-        assert_eq!(s1.cmp(&s2.slice(..24)), sp_std::cmp::Ordering::Greater);
+        assert_eq!(s1.cmp(&s2), core::cmp::Ordering::Equal);
+        assert_eq!(s1.slice(..24).cmp(&s2), core::cmp::Ordering::Less);
+        assert_eq!(s1.cmp(&s2.slice(..24)), core::cmp::Ordering::Greater);
     }
 
     #[test]
@@ -2454,8 +2454,8 @@ mod tests {
         let s1 = r1.slice(..);
         let s2 = r2.slice(..);
 
-        assert_eq!(s1.cmp(&s2), sp_std::cmp::Ordering::Greater);
-        assert_eq!(s2.cmp(&s1), sp_std::cmp::Ordering::Less);
+        assert_eq!(s1.cmp(&s2), core::cmp::Ordering::Greater);
+        assert_eq!(s2.cmp(&s1), core::cmp::Ordering::Less);
     }
 
     #[test]
@@ -2497,7 +2497,7 @@ mod tests {
 
     #[test]
     fn to_cow_01() {
-        use sp_std::borrow::Cow;
+        use alloc::borrow::Cow;
         let r = Rope::from_str(TEXT);
         let s = r.slice(13..83);
         let cow: Cow<str> = s.into();
@@ -2507,7 +2507,7 @@ mod tests {
 
     #[test]
     fn to_cow_02() {
-        use sp_std::borrow::Cow;
+        use alloc::borrow::Cow;
         let r = Rope::from_str(TEXT);
         let s = r.slice(13..14);
         let cow: Cow<str> = r.slice(13..14).into();

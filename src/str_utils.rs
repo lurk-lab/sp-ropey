@@ -569,7 +569,7 @@ unsafe fn count_line_breaks_in_chunk_from_ptr<T: ByteChunk>(bytes: &[u8]) -> T {
 /// of `bytes` if alignment is beyond the end of `bytes`.
 #[inline(always)]
 fn alignment_diff<T>(bytes: &[u8]) -> usize {
-    let alignment = sp_std::mem::align_of::<T>();
+    let alignment = core::mem::align_of::<T>();
     let ptr = bytes.as_ptr() as usize;
     (alignment - ((ptr - 1) & (alignment - 1)) - 1).min(bytes.len())
 }
@@ -578,7 +578,7 @@ fn alignment_diff<T>(bytes: &[u8]) -> usize {
 
 /// Interface for working with chunks of bytes at a time, providing the
 /// operations needed for the functionality in str_utils.
-trait ByteChunk: Copy + Clone + sp_std::fmt::Debug {
+trait ByteChunk: Copy + Clone + core::fmt::Debug {
     /// Returns the size of the chunk in bytes.
     fn size() -> usize;
 
@@ -632,12 +632,12 @@ trait ByteChunk: Copy + Clone + sp_std::fmt::Debug {
 impl ByteChunk for usize {
     #[inline(always)]
     fn size() -> usize {
-        sp_std::mem::size_of::<usize>()
+        core::mem::size_of::<usize>()
     }
 
     #[inline(always)]
     fn max_acc() -> usize {
-        (256 / sp_std::mem::size_of::<usize>()) - 1
+        (256 / core::mem::size_of::<usize>()) - 1
     }
 
     #[inline(always)]
@@ -738,7 +738,7 @@ impl ByteChunk for usize {
 /// - u{2029}        (Paragraph Separator)
 #[allow(unused)] // Used in tests, as reference solution.
 struct LineBreakIter<'a> {
-    byte_itr: sp_std::str::Bytes<'a>,
+    byte_itr: alloc::str::Bytes<'a>,
     byte_idx: usize,
 }
 
