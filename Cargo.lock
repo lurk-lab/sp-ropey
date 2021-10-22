@@ -383,20 +383,13 @@ checksum = "fe0f37c9e8f3c5a4a66ad655a93c74daac4ad00c441533bf5c6e7990bb42604e"
 
 [[package]]
 name = "sp-ropey"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "proptest",
  "rand 0.7.3",
  "smallvec",
- "sp-std",
  "unicode-segmentation",
 ]
-
-[[package]]
-name = "sp-std"
-version = "3.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35391ea974fa5ee869cb094d5b437688fbf3d8127d64d1b9fed5822a1ed39b12"
 
 [[package]]
 name = "tempfile"

@@ -1,4 +1,4 @@
-use sp_std::sync::Arc;
+use alloc::sync::Arc;
 
 use crate::str_utils::{byte_to_line_idx, byte_to_utf16_surrogate_idx, char_to_byte_idx};
 use crate::tree::node_text::fix_segment_seam;
@@ -403,7 +403,7 @@ impl Node {
                 } else {
                     let mut r_children =
                         children.insert_split(0, (extra_node.text_info(), extra_node));
-                    sp_std::mem::swap(children, &mut r_children);
+                    core::mem::swap(children, &mut r_children);
                     return Some(Arc::new(Node::Internal(r_children)));
                 }
             } else {
@@ -998,8 +998,8 @@ mod tests {
     fn crlf_corner_case_01() {
         use super::Node;
         use crate::tree::{NodeChildren, NodeText, MAX_BYTES};
-        use sp_std::iter;
-        use sp_std::sync::Arc;
+        use core::iter;
+        use alloc::sync::Arc;
 
         // Construct the corner case
         let nodel = Node::Leaf(NodeText::from_str(
@@ -1026,8 +1026,8 @@ mod tests {
     fn crlf_corner_case_02() {
         use super::Node;
         use crate::tree::{NodeChildren, NodeText, MAX_BYTES};
-        use sp_std::iter;
-        use sp_std::sync::Arc;
+        use core::iter;
+        use alloc::sync::Arc;
 
         // Construct the corner case
         let nodel = Node::Leaf(NodeText::from_str(

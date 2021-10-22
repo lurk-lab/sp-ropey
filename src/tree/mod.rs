@@ -4,7 +4,7 @@ mod node_text;
 mod text_info;
 
 #[cfg(not(test))]
-use sp_std::{mem::size_of, sync::Arc};
+use core::mem::size_of;
 
 pub(crate) use self::node::Node;
 pub(crate) use self::node_children::NodeChildren;

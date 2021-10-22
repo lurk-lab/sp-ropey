@@ -1,7 +1,10 @@
 use smallvec::alloc::string::String;
-use sp_std::{
+use core::{
   iter::FromIterator,
   ops::RangeBounds,
+};
+
+use alloc::{
   sync::Arc,
   vec::Vec,
 };
@@ -400,7 +403,7 @@ impl Rope {
     // Handle root splitting, if any.
     if let Some((r_info, r_node)) = residual {
       let mut l_node = Arc::new(Node::new());
-      sp_std::mem::swap(&mut l_node, &mut self.root);
+      core::mem::swap(&mut l_node, &mut self.root);
 
       let mut children = NodeChildren::new();
       children.push((l_info, l_node));
@@ -454,7 +457,7 @@ impl Rope {
       // Handle root splitting, if any.
       if let Some((r_info, r_node)) = residual {
         let mut l_node = Arc::new(Node::new());
-        sp_std::mem::swap(&mut l_node, &mut self.root);
+        core::mem::swap(&mut l_node, &mut self.root);
 
         let mut children = NodeChildren::new();
         children.push((l_info, l_node));
@@ -550,7 +553,7 @@ impl Rope {
     if char_idx == 0 {
       // Special case 1
       let mut new_rope = Rope::new();
-      sp_std::mem::swap(self, &mut new_rope);
+      core::mem::swap(self, &mut new_rope);
       new_rope
     }
     else if char_idx == self.len_chars() {
@@ -579,7 +582,7 @@ impl Rope {
     if self.len_chars() == 0 {
       // Special case
       let mut other = other;
-      sp_std::mem::swap(self, &mut other);
+      core::mem::swap(self, &mut other);
     }
     else if other.len_chars() > 0 {
       let seam_byte_i = if other.char(0) == '\n' {
@@ -1408,9 +1411,9 @@ impl<'a> From<&'a str> for Rope {
   fn from(text: &'a str) -> Self { Rope::from_str(text) }
 }
 
-impl<'a> From<sp_std::borrow::Cow<'a, str>> for Rope {
+impl<'a> From<alloc::borrow::Cow<'a, str>> for Rope {
   #[inline]
-  fn from(text: sp_std::borrow::Cow<'a, str>) -> Self { Rope::from_str(&text) }
+  fn from(text: alloc::borrow::Cow<'a, str>) -> Self { Rope::from_str(&text) }
 }
 
 impl From<String> for Rope {
@@ -1470,23 +1473,23 @@ impl<'a> From<&'a Rope> for String {
   }
 }
 
-impl<'a> From<Rope> for sp_std::borrow::Cow<'a, str> {
+impl<'a> From<Rope> for alloc::borrow::Cow<'a, str> {
   #[inline]
-  fn from(r: Rope) -> Self { sp_std::borrow::Cow::Owned(String::from(r)) }
+  fn from(r: Rope) -> Self { alloc::borrow::Cow::Owned(String::from(r)) }
 }
 
 /// Attempts to borrow the contents of the `Rope`, but will convert to an
 /// owned string if the contents is not contiguous in memory.
 ///
 /// Runs in best case O(1), worst case O(N).
-impl<'a> From<&'a Rope> for sp_std::borrow::Cow<'a, str> {
+impl<'a> From<&'a Rope> for alloc::borrow::Cow<'a, str> {
   #[inline]
   fn from(r: &'a Rope) -> Self {
     if let Node::Leaf(ref text) = *r.root {
-      sp_std::borrow::Cow::Borrowed(text)
+      alloc::borrow::Cow::Borrowed(text)
     }
     else {
-      sp_std::borrow::Cow::Owned(String::from(r))
+      alloc::borrow::Cow::Owned(String::from(r))
     }
   }
 }
@@ -1502,9 +1505,9 @@ impl<'a> FromIterator<&'a str> for Rope {
   }
 }
 
-impl<'a> FromIterator<sp_std::borrow::Cow<'a, str>> for Rope {
+impl<'a> FromIterator<alloc::borrow::Cow<'a, str>> for Rope {
   fn from_iter<T>(iter: T) -> Self
-  where T: IntoIterator<Item = sp_std::borrow::Cow<'a, str>> {
+  where T: IntoIterator<Item = alloc::borrow::Cow<'a, str>> {
     let mut builder = RopeBuilder::new();
     for chunk in iter {
       builder.append(&chunk);
@@ -1527,15 +1530,15 @@ impl FromIterator<String> for Rope {
 //==============================================================
 // Other impls
 
-impl sp_std::fmt::Debug for Rope {
-  fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+impl core::fmt::Debug for Rope {
+  fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
     f.debug_list().entries(self.chunks()).finish()
   }
 }
 
-impl sp_std::fmt::Display for Rope {
+impl core::fmt::Display for Rope {
   #[inline]
-  fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+  fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
     for chunk in self.chunks() {
       write!(f, "{}", chunk)?
     }
@@ -1543,70 +1546,70 @@ impl sp_std::fmt::Display for Rope {
   }
 }
 
-impl sp_std::default::Default for Rope {
+impl core::default::Default for Rope {
   #[inline]
   fn default() -> Self { Self::new() }
 }
 
-impl sp_std::cmp::Eq for Rope {}
+impl core::cmp::Eq for Rope {}
 
-impl sp_std::cmp::PartialEq<Rope> for Rope {
+impl core::cmp::PartialEq<Rope> for Rope {
   #[inline]
   fn eq(&self, other: &Rope) -> bool { self.slice(..) == other.slice(..) }
 }
 
-impl<'a> sp_std::cmp::PartialEq<&'a str> for Rope {
+impl<'a> core::cmp::PartialEq<&'a str> for Rope {
   #[inline]
   fn eq(&self, other: &&'a str) -> bool { self.slice(..) == *other }
 }
 
-impl<'a> sp_std::cmp::PartialEq<Rope> for &'a str {
+impl<'a> core::cmp::PartialEq<Rope> for &'a str {
   #[inline]
   fn eq(&self, other: &Rope) -> bool { *self == other.slice(..) }
 }
 
-impl sp_std::cmp::PartialEq<str> for Rope {
+impl core::cmp::PartialEq<str> for Rope {
   #[inline]
   fn eq(&self, other: &str) -> bool { self.slice(..) == other }
 }
 
-impl sp_std::cmp::PartialEq<Rope> for str {
+impl core::cmp::PartialEq<Rope> for str {
   #[inline]
   fn eq(&self, other: &Rope) -> bool { self == other.slice(..) }
 }
 
-impl<'a> sp_std::cmp::PartialEq<String> for Rope {
+impl<'a> core::cmp::PartialEq<String> for Rope {
   #[inline]
   fn eq(&self, other: &String) -> bool { self.slice(..) == other.as_str() }
 }
 
-impl<'a> sp_std::cmp::PartialEq<Rope> for String {
+impl<'a> core::cmp::PartialEq<Rope> for String {
   #[inline]
   fn eq(&self, other: &Rope) -> bool { self.as_str() == other.slice(..) }
 }
 
-impl<'a> sp_std::cmp::PartialEq<sp_std::borrow::Cow<'a, str>> for Rope {
+impl<'a> core::cmp::PartialEq<alloc::borrow::Cow<'a, str>> for Rope {
   #[inline]
-  fn eq(&self, other: &sp_std::borrow::Cow<'a, str>) -> bool {
+  fn eq(&self, other: &alloc::borrow::Cow<'a, str>) -> bool {
     self.slice(..) == **other
   }
 }
 
-impl<'a> sp_std::cmp::PartialEq<Rope> for sp_std::borrow::Cow<'a, str> {
+impl<'a> core::cmp::PartialEq<Rope> for alloc::borrow::Cow<'a, str> {
   #[inline]
   fn eq(&self, other: &Rope) -> bool { **self == other.slice(..) }
 }
 
-impl sp_std::cmp::Ord for Rope {
+impl core::cmp::Ord for Rope {
   #[inline]
-  fn cmp(&self, other: &Rope) -> sp_std::cmp::Ordering {
+  fn cmp(&self, other: &Rope) -> core::cmp::Ordering {
     self.slice(..).cmp(&other.slice(..))
   }
 }
 
-impl sp_std::cmp::PartialOrd<Rope> for Rope {
+impl core::cmp::PartialOrd<Rope> for Rope {
   #[inline]
-  fn partial_cmp(&self, other: &Rope) -> Option<sp_std::cmp::Ordering> {
+  fn partial_cmp(&self, other: &Rope) -> Option<core::cmp::Ordering> {
     Some(self.cmp(other))
   }
 }
@@ -2760,7 +2763,7 @@ mod tests {
 
   #[test]
   fn to_cow_01() {
-    use sp_std::borrow::Cow;
+    use alloc::borrow::Cow;
     let r = Rope::from_str(TEXT);
     let cow: Cow<str> = (&r).into();
 
@@ -2769,7 +2772,7 @@ mod tests {
 
   #[test]
   fn to_cow_02() {
-    use sp_std::borrow::Cow;
+    use alloc::borrow::Cow;
     let r = Rope::from_str(TEXT);
     let cow: Cow<str> = (r.clone()).into();
 
@@ -2778,7 +2781,7 @@ mod tests {
 
   #[test]
   fn to_cow_03() {
-    use sp_std::borrow::Cow;
+    use alloc::borrow::Cow;
     let r = Rope::from_str("a");
     let cow: Cow<str> = (&r).into();
 

@@ -1,4 +1,4 @@
-use sp_std::ops::{Add, AddAssign, Sub, SubAssign};
+use core::ops::{Add, AddAssign, Sub, SubAssign};
 
 use crate::str_utils::{count_chars, count_line_breaks, count_utf16_surrogates};
 use crate::tree::Count;
