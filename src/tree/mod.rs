@@ -5,6 +5,8 @@ mod text_info;
 
 #[cfg(not(test))]
 use core::mem::size_of;
+#[cfg(not(test))]
+use alloc::sync::Arc;
 
 pub(crate) use self::node::Node;
 pub(crate) use self::node_children::NodeChildren;
